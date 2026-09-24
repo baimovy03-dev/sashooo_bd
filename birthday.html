@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>С Днём Рождения, Александра</title>
+<style>
+  :root{
+    --bg1:#f7f5f2;
+    --bg2:#eae3dd;
+    --ink:#3b332f;
+    --ink-soft:#6d6259;
+    --rose:#ffffff;
+    --rose-shadow:#d8cfc7;
+    --accent:#c9a9a6;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    box-sizing:border-box;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg1:#161311;
+      --bg2:#211c19;
+      --ink:#f1ece7;
+      --ink-soft:#c9beb5;
+      --rose:#faf7f4;
+      --rose-shadow:#0000;
+      --accent:#e8c9c6;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg1:#161311; --bg2:#211c19; --ink:#f1ece7; --ink-soft:#c9beb5; --rose:#faf7f4; --rose-shadow:#0000; --accent:#e8c9c6;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  html,body{height:100%;}
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100%;
+    background:radial-gradient(circle at 50% 20%, var(--bg2), var(--bg1));
+    color:var(--ink);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ---------- Entrance overlay ---------- */
+  #entrance{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 50% 30%, var(--bg2), var(--bg1));
+    z-index:50;
+    transition:opacity 1s ease, visibility 1s ease;
+  }
+  #entrance.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+  #enterBtn{
+    font-family:inherit;
+    font-size:1.05rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:1rem 2.4rem;
+    border-radius:999px;
+    border:1px solid var(--accent);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:background .3s ease, color .3s ease, transform .3s ease;
+  }
+  #enterBtn:hover{ background:var(--accent); color:#fff; transform:translateY(-2px); }
+
+  /* ---------- Scene ---------- */
+  #scene{
+    min-height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:3rem 1.5rem 4rem;
+    text-align:center;
+    position:relative;
+    opacity:0;
+    transition:opacity 1.4s ease;
+  }
+  #scene.show{opacity:1;}
+
+  .title{
+    font-size:clamp(1.8rem, 6vw, 3rem);
+    font-weight:400;
+    letter-spacing:.03em;
+    margin:1.5rem 0 .5rem;
+    color:var(--ink);
+  }
+  .subtitle{
+    font-style:italic;
+    color:var(--ink-soft);
+    margin-bottom:2.5rem;
+    font-size:1.05rem;
+  }
+  .message{
+    max-width:560px;
+    line-height:1.9;
+    font-size:1.08rem;
+    color:var(--ink);
+    margin-bottom:2.5rem;
+  }
+  .signature{
+    font-style:italic;
+    color:var(--accent);
+    font-size:1.1rem;
+    letter-spacing:.05em;
+  }
+
+  /* ---------- Rose ---------- */
+  .rose-wrap{ width:min(90vw, 520px); height:auto; margin-bottom:.5rem; filter:drop-shadow(0 10px 20px var(--rose-shadow)); animation:float 6s ease-in-out infinite; }
+  @keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+
+  /* ---------- Falling petals ---------- */
+  .petal{
+    position:fixed;
+    top:-5%;
+    width:14px; height:14px;
+    background:var(--rose);
+    border-radius:0 100% 0 100%;
+    opacity:.85;
+    pointer-events:none;
+    z-index:5;
+    box-shadow:0 2px 6px rgba(0,0,0,.06);
+    animation-name: fall, sway;
+    animation-timing-function: linear, ease-in-out;
+    animation-iteration-count: infinite, infinite;
+  }
+  @keyframes fall{
+    to{ transform:translateY(115vh) rotate(360deg); }
+  }
+  @keyframes sway{
+    0%,100%{ margin-left:0; }
+    50%{ margin-left:40px; }
+  }
+
+  footer{
+    margin-top:1rem;
+    font-size:.8rem;
+    color:var(--ink-soft);
+    opacity:.6;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== Entrance ===== -->
+  <div id="entrance">
+    <button id="enterBtn">Открыть</button>
+  </div>
+
+  <!-- ===== Audio ===== -->
+  <!--
+    КАК ДОБАВИТЬ СВОЙ ТРЕК:
+    Положи mp3-файл рядом с этим HTML (в той же папке репозитория)
+    и назови его track.mp3 — подтянется автоматически.
+    Если хочешь другое имя/путь — просто поменяй src ниже.
+    Трек запустится сразу после тапа на "Открыть" — это тот самый
+    пользовательский жест, без которого браузер не разрешит автозапуск звука.
+  -->
+  <audio id="track" src="track.mp3" preload="auto"></audio>
+
+  <!-- ===== Scene ===== -->
+  <div id="scene">
+    <!--
+      КАК ВСТАВИТЬ СВОЮ КАРТИНКУ РОЗ:
+      Положи файл роз рядом с этим HTML (в той же папке репозитория)
+      и назови его roses.png — картинка подтянется автоматически.
+      Если хочешь другое имя/путь — просто поменяй src ниже.
+    -->
+    <img class="rose-wrap" id="myRoses" src="roses.png" alt="белые розы"
+         onerror="this.style.display='none'"
+         onload="document.getElementById('fallbackRose').style.display='none'">
+    <!-- запасной вариант, показывается, если картинка выше не вставлена -->
+    <svg class="rose-wrap" id="fallbackRose" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <ellipse cx="100" cy="150" rx="4" ry="40" fill="#8ba888"/>
+        <circle cx="100" cy="85" r="34" fill="var(--rose)"/>
+        <circle cx="100" cy="85" r="10" fill="#f2ece6"/>
+      </g>
+    </svg>
+
+    <h1 class="title">С Днём Рождения,<br>Александра</h1>
+    <p class="subtitle">пусть этот день будет таким же светлым, как эти розы</p>
+
+    <p class="message">
+      Каждый год рядом с тобой — это подарок, а не наоборот.
+      Пусть в этот день тебя окружают только тёплые слова, искренние улыбки
+      и та лёгкость, которую ты умеешь дарить всем вокруг.
+      Оставайся такой же настоящей — я рядом, что бы ни было.
+    </p>
+
+    <p class="signature">— От rawyrs.x</p>
+
+    <footer>для тебя, с любовью</footer>
+  </div>
+
+<script>
+  const entrance = document.getElementById('entrance');
+  const scene = document.getElementById('scene');
+  const btn = document.getElementById('enterBtn');
+  const track = document.getElementById('track');
+
+  btn.addEventListener('click', () => {
+    entrance.classList.add('hidden');
+    scene.classList.add('show');
+    spawnPetals();
+    try {
+      if (track.getAttribute('src')) {
+        track.currentTime = 0;
+        track.play().catch(()=>{ /* если src пуст или браузер заблокировал — просто тихо игнорируем */ });
+      }
+    } catch(e) {}
+  });
+
+  function spawnPetals(){
+    const count = 26;
+    for(let i=0;i<count;i++){
+      const p = document.createElement('div');
+      p.className = 'petal';
+      const left = Math.random()*100;
+      const duration = 6 + Math.random()*6;
+      const delay = Math.random()*4;
+      const swayDur = 3 + Math.random()*3;
+      const size = 10 + Math.random()*10;
+      p.style.left = left + 'vw';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = duration + 's, ' + swayDur + 's';
+      p.style.animationDelay = delay + 's, 0s';
+      document.body.appendChild(p);
+      setTimeout(()=> p.remove(), (duration+delay)*1000 + 500);
+    }
+    // continue spawning gently while page is open
+    if (!window.__petalInterval){
+      window.__petalInterval = setInterval(()=>{
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const left = Math.random()*100;
+        const duration = 6 + Math.random()*6;
+        const swayDur = 3 + Math.random()*3;
+        const size = 10 + Math.random()*10;
+        p.style.left = left + 'vw';
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.animationDuration = duration + 's, ' + swayDur + 's';
+        document.body.appendChild(p);
+        setTimeout(()=> p.remove(), duration*1000 + 500);
+      }, 900);
+    }
+  }
+</script>
+
+</body>
+</html>
